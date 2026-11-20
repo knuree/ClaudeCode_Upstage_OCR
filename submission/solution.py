@@ -7,8 +7,20 @@ import csv
 from collections import Counter, defaultdict
 from pathlib import Path
 
-BASE = Path(__file__).resolve().parent
-INPUT = BASE / "안내서비스.csv"
+SCRIPT_DIR = Path(__file__).resolve().parent
+
+
+def find_input():
+    """안내서비스.csv 를 스크립트 폴더 → 현재 작업 폴더 순서로 찾는다."""
+    for base in (SCRIPT_DIR, Path.cwd()):
+        p = base / "안내서비스.csv"
+        if p.exists():
+            return p
+    raise SystemExit("[오류] 안내서비스.csv 를 찾을 수 없습니다. solution.py 와 같은 폴더에 넣어 주세요.")
+
+
+INPUT = find_input()
+BASE = INPUT.parent  # 결과물은 입력 파일이 있는 폴더에 저장
 OUT_DIR = BASE / "출력_카테고리별"
 SUMMARY = BASE / "결과_카테고리집계.csv"
 
