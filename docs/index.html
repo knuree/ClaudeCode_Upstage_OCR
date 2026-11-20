@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>정부 안내서비스 카테고리</title>
+<style>
+  :root { --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb; --bg:#f6f7fb; --accent:#1c4a7a; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif; color:var(--ink); background:var(--bg); }
+  .wrap { max-width:960px; margin:0 auto; padding:32px 20px 64px; }
+  h1 { font-size:28px; margin:0 0 6px; }
+  .sub { color:var(--muted); margin:0 0 24px; }
+  .news { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:28px; }
+  .news img { width:100%; height:auto; display:block; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,.12); }
+  .search { display:flex; gap:12px; align-items:center; margin-bottom:20px; flex-wrap:wrap; }
+  .search input { flex:1; min-width:220px; padding:12px 16px; border:1px solid var(--line); border-radius:10px; font-size:16px; font-family:inherit; }
+  .search input:focus { outline:2px solid var(--accent); border-color:transparent; }
+  #count { font-weight:700; color:var(--accent); white-space:nowrap; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:16px; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:14px; padding:20px; border-top:5px solid var(--c); }
+  .card h2 { margin:0 0 2px; font-size:20px; display:flex; justify-content:space-between; align-items:baseline; }
+  .card .n { color:var(--c); font-size:15px; }
+  .rep { color:var(--muted); font-size:14px; margin:0 0 12px; }
+  .rep b { color:var(--ink); }
+  .card ul { list-style:none; margin:0; padding:12px 0 0; border-top:1px dashed var(--line); font-size:14px; }
+  .card li { display:flex; justify-content:space-between; gap:8px; padding:3px 0; }
+  .card li span:last-child { color:var(--muted); white-space:nowrap; }
+  .empty { text-align:center; color:var(--muted); padding:48px 0; }
+  @media (max-width:700px) { .news { grid-template-columns:repeat(2,1fr); } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>정부 안내서비스</h1>
+  <p class="sub">카테고리별 안내서비스를 한눈에 확인하세요.</p>
+
+  <section class="news" aria-label="카드뉴스">
+    <img src="images/카드뉴스1.png" alt="카드뉴스 1: 생활안전 캠페인">
+    <img src="images/카드뉴스2.png" alt="카드뉴스 2: 어린이 안전">
+    <img src="images/카드뉴스3.png" alt="카드뉴스 3: 교통안전">
+    <img src="images/카드뉴스4.png" alt="카드뉴스 4: 화재 예방">
+  </section>
+
+  <div class="search">
+    <input id="q" type="search" placeholder="카테고리 또는 문의기관 검색 (예: 복지, 국토교통부)" autocomplete="off">
+    <span id="count" aria-live="polite"></span>
+  </div>
+
+  <div id="grid" class="grid"></div>
+</div>
+
+<script>
+const SERVICES = [{"id": "A001", "name": "주민등록 발급 안내", "category": "민원", "org": "국토교통부", "call": "1374"}, {"id": "A002", "name": "전입신고 안내", "category": "민원", "org": "보건복지부", "call": "1352"}, {"id": "A003", "name": "인감증명 안내", "category": "민원", "org": "국토교통부", "call": "1313"}, {"id": "A004", "name": "민원접수 안내", "category": "민원", "org": "교육부", "call": "1341"}, {"id": "A005", "name": "정부24 이용 안내", "category": "민원", "org": "국토교통부", "call": "1356"}, {"id": "A006", "name": "기초연금 안내", "category": "복지", "org": "보건복지부", "call": "1386"}, {"id": "A007", "name": "복지급여 안내", "category": "복지", "org": "고용노동부", "call": "1319"}, {"id": "A008", "name": "장애인지원 안내", "category": "복지", "org": "보건복지부", "call": "1337"}, {"id": "A009", "name": "아동수당 안내", "category": "복지", "org": "지자체", "call": "1326"}, {"id": "A010", "name": "지방세 납부 안내", "category": "세금", "org": "보건복지부", "call": "1357"}, {"id": "A011", "name": "취득세 안내", "category": "세금", "org": "지자체", "call": "1341"}, {"id": "A012", "name": "재산세 안내", "category": "세금", "org": "지자체", "call": "1317"}, {"id": "A013", "name": "자동차등록 안내", "category": "교통", "org": "국토교통부", "call": "1399"}, {"id": "A014", "name": "운전면허 안내", "category": "교통", "org": "보건복지부", "call": "1357"}, {"id": "A015", "name": "주정차단속 안내", "category": "교통", "org": "국토교통부", "call": "1367"}, {"id": "A016", "name": "재난지원금 안내", "category": "재난", "org": "행정안전부", "call": "1356"}, {"id": "A017", "name": "대피소 안내", "category": "재난", "org": "국세청", "call": "1359"}, {"id": "A018", "name": "안전신고 안내", "category": "재난", "org": "국세청", "call": "1357"}, {"id": "A019", "name": "국민취업지원 안내", "category": "일자리", "org": "지자체", "call": "1386"}, {"id": "A020", "name": "구직급여 안내", "category": "일자리", "org": "국토교통부", "call": "1350"}, {"id": "A021", "name": "청년일자리 안내", "category": "일자리", "org": "지자체", "call": "1392"}, {"id": "A022", "name": "평생교육 안내", "category": "교육", "org": "지자체", "call": "1379"}, {"id": "A023", "name": "학자금 안내", "category": "교육", "org": "지자체", "call": "1324"}, {"id": "A024", "name": "교육비지원 안내", "category": "교육", "org": "행정안전부", "call": "1368"}];
+const COLORS = ["#1c4a7a","#c64a2b","#2c8750","#5b3b8a","#b7791f","#0e7490","#be185d"];
+
+const cats = [...new Set(SERVICES.map(s => s.category))];
+const color = c => COLORS[cats.indexOf(c) % COLORS.length];
+
+// 대표 문의기관: 최다 등장, 동률이면 가나다순
+function representative(items) {
+  const m = {};
+  items.forEach(i => m[i.org] = (m[i.org] || 0) + 1);
+  return Object.entries(m).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "ko"))[0][0];
+}
+
+function render() {
+  const q = document.getElementById("q").value.trim().toLowerCase();
+  const hit = SERVICES.filter(s => !q || s.category.toLowerCase().includes(q) || s.org.toLowerCase().includes(q));
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+  cats.forEach(c => {
+    const items = hit.filter(s => s.category === c);
+    if (!items.length) return;
+    const card = document.createElement("article");
+    card.className = "card";
+    card.style.setProperty("--c", color(c));
+    const h = document.createElement("h2");
+    h.innerHTML = `<span></span><span class="n">${items.length}건</span>`;
+    h.firstChild.textContent = c;
+    const p = document.createElement("p");
+    p.className = "rep";
+    p.innerHTML = "대표 문의기관 <b></b>";
+    p.querySelector("b").textContent = representative(items);
+    const ul = document.createElement("ul");
+    items.forEach(i => {
+      const li = document.createElement("li");
+      li.innerHTML = "<span></span><span></span>";
+      li.children[0].textContent = i.name;
+      li.children[1].textContent = i.org;
+      ul.appendChild(li);
+    });
+    card.append(h, p, ul);
+    grid.appendChild(card);
+  });
+  if (!hit.length) grid.innerHTML = '<p class="empty">검색 결과가 없습니다.</p>';
+  document.getElementById("count").textContent = `결과 ${hit.length}건`;
+}
+document.getElementById("q").addEventListener("input", render);
+render();
+</script>
+</body>
+</html>
